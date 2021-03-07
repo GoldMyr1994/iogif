@@ -1,2 +1,6 @@
 tmp/
-images-3.jpeg
+src/billie
+out/
+__pycache__/
+.vscode/
+!out/keep/*
