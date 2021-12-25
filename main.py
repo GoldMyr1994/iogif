@@ -1,8 +1,12 @@
+import sys
+sys.path.append('/Users/mauroconte/Desktop/iogif/src/')
+
 import numpy as np
 import cv2
 import os
 import uuid
 import time
+import testsrc
 
 import util
 from vector_quantization import *
@@ -30,7 +34,7 @@ def main():
 
   _id = uuid.uuid4()
   
-  img = util.read_image_from_url('URL_TO_IMAGE')
+  img = testsrc.get_billie()
   
   print("Vector Quantization (LBG) on iamge of shape:", img.shape)
   q, _, _ = LGB(img, 4)
@@ -38,12 +42,12 @@ def main():
 
   img = cv2.imread('out/q4.png')
   os.makedirs(f'out/{_id}')
-  for i in range(100):
+  for i in range(10):
     print("colormap", i)
     img = util.colormap(img,[])
     cv2.imwrite(f'out/{_id}/{uuid.uuid4()}.png', img)
 
-  util.make_gif_from_folder("out/d92f76b1-e5d4-4259-bd3a-95eaa785257b")
+  util.make_gif_from_folder(f'out/{_id}')
 
 if __name__ == "__main__":
   main()

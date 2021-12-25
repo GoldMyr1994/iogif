@@ -4,3 +4,4 @@ out/
 __pycache__/
 .vscode/
 !out/keep/*
+.DS_Store
