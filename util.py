@@ -25,7 +25,6 @@ def make_gif_from_folder(folder):
 
   filenames.sort()
   images = list(map(lambda filename: imageio.imread(filename), filenames))
-  print(len(images))
   make_gif(images)
 
 
@@ -40,8 +39,17 @@ def clean_temp():
 
 def rescale_image(image, width):
   h = width*(image.shape[0]/image.shape[1])
-  return cv2.resize(image, (width, int(h)))
+  return cv2.resize(image, (width, int(h)+1))
   
+def read_image_from_disk(image_path, max_width=800):
+  img = Image.open(image_path)
+  img = np.asarray(img)
+  if max_width is not None and img.shape[1] > max_width: 
+      return rescale_image(np.asarray(img), max_width)
+  else:
+    return np.asarray(img)
+
+
 def read_image_from_url(image_url, max_width=800):
   tmp_path = f"out/temp/temp_imge_{uuid.uuid4()}.png"
   # Exception Handling for invalid requests
