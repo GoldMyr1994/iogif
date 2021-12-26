@@ -42,13 +42,14 @@ def main():
       is_bright = np.sum(original_square.astype(np.uint8))
       if is_bright == 0:
         newqr[y*scale:y*scale+dy*scale, x*scale:x*scale+dx*scale] = get_dark()
-      elif is_bright == 9: 
+      elif is_bright == 9:
         newqr[y*scale:y*scale+dy*scale, x*scale:x*scale+dx*scale] = get_bright()
-      else: 
+      else:
         newqr[y*scale:y*scale+dy*scale, x*scale:x*scale+dx*scale] = 127
   n = np.zeros((newqr.shape[0]+2*10*scale, newqr.shape[1]+2*10*scale), np.uint8)+255
   n[10*scale:n.shape[0]-10*scale, 10*scale:n.shape[1]-10*scale] = newqr[:,:]
   cv2.imwrite('regenerated-qrcode.png', n.astype(np.uint8))
 
 if __name__ == '__main__':
+  print(f'runnning {__file__}')
   main()

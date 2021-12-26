@@ -6,6 +6,7 @@ src/__pycache__/
 .vscode/
 !out/keep/*
 .DS_Store
+src/.DS_Store
 
 # avoid to uplaod my greenpass
 greenpass*

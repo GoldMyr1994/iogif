@@ -6,7 +6,6 @@ import cv2
 import os
 import uuid
 import time
-import testsrc
 
 import util
 from vector_quantization import *
@@ -33,9 +32,9 @@ def compose_h_w(module=64, n=9):
 def main():
 
   _id = uuid.uuid4()
-  
-  img = testsrc.get_billie()
-  
+
+  img = util.get_billie()
+
   print("Vector Quantization (LBG) on iamge of shape:", img.shape)
   q, _, _ = LGB(img, 4)
   cv2.imwrite("out/q4.png",q)
@@ -52,4 +51,3 @@ def main():
 if __name__ == "__main__":
   main()
 
-  

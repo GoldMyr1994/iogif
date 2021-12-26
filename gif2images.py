@@ -9,8 +9,8 @@ import os
 imageObject = Image.open("./io.gif", mode="r")
 
 for frame in range(0,imageObject.n_frames):
-    imageObject.seek(frame)
-    img = np.asarray(imageObject.convert("RGB"))[100:640, 500:1040]
-    if (not os.path.isdir('tmp')):
-        os.mkdir('tmp')
-    cv2.imwrite(f"tmp/img{frame}.png", img)
+  imageObject.seek(frame)
+  img = np.asarray(imageObject.convert("RGB"))[100:640, 500:1040]
+  if (not os.path.isdir('tmp')):
+      os.mkdir('tmp')
+  cv2.imwrite(f"tmp/img{frame}.png", img)
