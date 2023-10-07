@@ -10,6 +10,7 @@ import imageio
 import numpy as np
 import time
 from urllib.parse import urlparse
+import cv2
 
 ImageFile.LOAD_TRUNCATED_IMAGES = True
 
@@ -26,20 +27,21 @@ def ensure_square_image(image, length):
   image = image.resize((length, length))
   return image
 
-
-def make_gif(images, duration=0.04):
-  imageio.mimsave(os.path.join('out/movie.gif'), images) # modify duration as needed
-
-def make_gif_from_folder(folder):
-  #image_folder = os.fsencode(folder)
+def get_images_filenames_from_folder(folder):
   filenames = []
   for file in os.listdir(folder):
     filename = os.fsdecode(file)
     if filename.endswith( ('.jpg','.jpeg', '.png', '.gif') ):
       filenames.append(f"{folder}/{filename}")
-  filenames.sort()
+  return filenames
+
+def make_gif(images, out, duration=0.04):
+  imageio.mimsave(os.path.join(out), images)
+
+def make_gif_from_folder(folder, out):
+  filenames = get_images_filenames_from_folder(folder)
   images = list(map(lambda filename: imageio.imread(filename), filenames))
-  make_gif(images)
+  make_gif(images, out)
 
 def clean_temp():
   for root, dirs, files in os.walk("out/temp/"):
@@ -91,8 +93,10 @@ def colormap(img, colors, tol=1e-3):
     out[np.where(np.linalg.norm(img - el,axis=-1)<1e-3)] = colors[index]
   return out
 
-def compose_h_w(module=64, n=9):
-  images = list(map(lambda name: cv2.imread(f'tmp/{name}',1), os.listdir('tmp')))
+def make_andy_warhol(folder, module=64, n=9):
+  filenames = get_images_filenames_from_folder(folder)
+  images = list(map(lambda filename: imageio.imread(filename), filenames))
+
   randoms = []
   if n**2-len(images)>0:
     randoms = np.random.randint(0, len(images), n**2-len(images))
@@ -108,4 +112,4 @@ def compose_h_w(module=64, n=9):
     r,c = i//n, i%n
     base[r*module:(r+1)*module, c*module:(c+1)*module] = images[i]
 
-  cv2.imwrite("io9x9.png",base)
+  return base
