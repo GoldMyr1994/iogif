@@ -37,26 +37,18 @@ def move_centroids(img, map_img, centroids):
 
 
 def LGB( img, l, centroids = [ ] ):
+  print("LGB: Vector Quantization on image shape:", img.shape)
   img = img.astype(np.float64)
   if len(centroids) == 0:
     centroids.append( np.mean(img,axis=(0,1),dtype=np.float64) )
   while len(centroids) < l:
     centroids = split_centroids(centroids,1)
-    print("#centroids:", len(centroids))
+    print("LGB: #centroids=", len(centroids))
     q_img, map_matrix, MSE = map_centroids( img, centroids )
     MSE_prev = MSE + 1000
     while (MSE_prev-MSE)>100:
-      print('decreasing MSE...')
+      print('LGB: MSE iteration MSE', MSE)
       MSE_prev = MSE
       centroids = move_centroids(img, map_matrix, centroids)
       q_img, map_matrix, MSE = map_centroids( img, centroids )
   return q_img.astype(np.uint8), centroids, map_matrix
-
-# def main():
-#   img = cv2.imread('images-3.jpeg')
-#   q, centroids, map_img = LGB(img,4)
-#   cv2.imwrite('out/test_vector_quantization.png', q)
-
-# if __name__ == 'main':
-#     main()
-

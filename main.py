@@ -10,8 +10,8 @@ import time
 import util
 from vector_quantization import *
 
-# source: string : image url or file path
 def main(
+  # source: string: image url or file path
   source='https://upload.wikimedia.org/wikipedia/en/thumb/7/7d/Lenna_%28test_image%29.png/440px-Lenna_%28test_image%29.png',
   quantization_levels=4,
   png_duration=4,
@@ -25,17 +25,15 @@ def main(
 
   img = np.array(img)
 
-  print("LBG Vector Quantization on image shape:", img.shape)
   q, _, _ = LGB(img, quantization_levels)
 
   _id = uuid.uuid4()
 
   os.makedirs(f'out/{_id}')
-  cv2.imwrite(f'out/{_id}/LBG-{quantization_levels}.png',q)
-  img = cv2.imread(f'out/{_id}/LBG-{quantization_levels}.png')
+  cv2.imwrite(f'out/{_id}/LGB-{quantization_levels}.png',q)
+  img = cv2.imread(f'out/{_id}/LGB-{quantization_levels}.png')
 
   for i in range(png_duration*png_frames_per_second - 1):
-    print("colormap", i)
     img = util.colormap(img,[])
     cv2.imwrite(f'out/{_id}/{uuid.uuid4()}.png', img)
 
