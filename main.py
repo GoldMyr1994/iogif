@@ -10,32 +10,20 @@ import time
 import util
 from vector_quantization import *
 
-def compose_h_w(module=64, n=9):
-  images = list(map(lambda name: cv2.imread(f'tmp/{name}',1), os.listdir('tmp')))
-  randoms = []
-  if n**2-len(images)>0:
-    randoms = np.random.randint(0, len(images), n**2-len(images))
-
-  for index in randoms:
-    images.append(images[index])
-
-  for i in range(len(images)):
-    images[i] = cv2.resize(images[i], (module, module), interpolation = cv2.INTER_AREA)
-
-  base = np.zeros((module*n,module*n, 3),np.uint8)
-  for i in range(n**2):
-    r,c = i//n, i%n
-    base[r*module:(r+1)*module, c*module:(c+1)*module] = images[i]
-
-  cv2.imwrite("io9x9.png",base)
-
 def main():
 
   _id = uuid.uuid4()
 
-  # img = util.get_billie()
-  # img = util.get_io()
-  img = util.get_luna()
+  # 'src/io.png'
+  # 'src/luna.jpeg'
+  # 'https://upload.wikimedia.org/wikipedia/en/thumb/7/7d/Lenna_%28test_image%29.png/440px-Lenna_%28test_image%29.png'
+  # 'https://media.gqitalia.it/photos/6089331d8a8620fb02fad5ba/1:1/w_960,c_limit/Billie%20Eilish_cover%20album%20Happier%20Than%20Ever.jpg'
+
+  img = util.read_image('src/luna.jpeg')
+
+  if img is None:
+    exit("Image not found")
+  img = np.array(img)
 
   print("Vector Quantization (LBG) on iamge of shape:", img.shape)
   q, _, _ = LGB(img, 4)
@@ -49,6 +37,8 @@ def main():
     cv2.imwrite(f'out/{_id}/{uuid.uuid4()}.png', img)
 
   util.make_gif_from_folder(f'out/{_id}')
+
+  # make something with the generated images
 
 if __name__ == "__main__":
   main()
