@@ -33,7 +33,9 @@ def main():
 
   _id = uuid.uuid4()
 
-  img = util.get_billie()
+  # img = util.get_billie()
+  # img = util.get_io()
+  img = util.get_luna()
 
   print("Vector Quantization (LBG) on iamge of shape:", img.shape)
   q, _, _ = LGB(img, 4)
