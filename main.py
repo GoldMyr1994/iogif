@@ -10,13 +10,9 @@ import time
 import util
 from vector_quantization import *
 
-  # 'samples/IMG_0956.jpeg'
-  # 'samples/io.png'
-  # 'samples/luna.jpeg'
-  # 'https://upload.wikimedia.org/wikipedia/en/thumb/7/7d/Lenna_%28test_image%29.png/440px-Lenna_%28test_image%29.png'
-  # 'https://media.gqitalia.it/photos/6089331d8a8620fb02fad5ba/1:1/w_960,c_limit/Billie%20Eilish_cover%20album%20Happier%20Than%20Ever.jpg'
+# source: string : image url or file path
 def main(
-  source='samples/IMG_0956.jpeg',
+  source='https://upload.wikimedia.org/wikipedia/en/thumb/7/7d/Lenna_%28test_image%29.png/440px-Lenna_%28test_image%29.png',
   quantization_levels=4,
   png_duration=4,
   png_frames_per_second=10,

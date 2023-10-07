@@ -1,0 +1,13 @@
+{
+    "cSpell.words": [
+        "astype",
+        "exif",
+        "imageio",
+        "imread",
+        "imwrite",
+        "iogif",
+        "kargs",
+        "linalg",
+        "mimsave"
+    ]
+}

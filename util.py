@@ -12,10 +12,9 @@ import time
 from urllib.parse import urlparse
 import cv2
 
-ImageFile.LOAD_TRUNCATED_IMAGES = True
+import tempfile
 
-def is_url(url):
-    return
+ImageFile.LOAD_TRUNCATED_IMAGES = True
 
 def ensure_square_image(image, length):
   w, h = image.size[:2]
@@ -61,28 +60,25 @@ def read_image(source_string, length=800):
 def read_image_from_disk(image_path, length=800):
   try:
     original_image = Image.open(image_path)
-    img = ImageOps.exif_transpose(original_image)
-    return ensure_square_image(img, length)
+    image = ImageOps.exif_transpose(original_image)
+    return ensure_square_image(image, length)
   except Exception as e:
-    print(str(e))
-    return None
+    exit(e)
 
 def read_image_from_url(image_url, length=800):
-  tmp_path = f"out/temp/temp_imge_{uuid.uuid4()}.png"
+  tmp = tempfile.NamedTemporaryFile()
   try:
-    ImgRequest = requests.get(image_url)
-    if ImgRequest.status_code == requests.codes.ok:
-      img = open(tmp_path,"wb")
-      img.write(ImgRequest.content)
-      img.close()
+    ImageRequest = requests.get(image_url)
+    if ImageRequest.status_code == requests.codes.ok:
+      tmp.write(ImageRequest.content)
     else:
-      print(ImgRequest.status_code)
-      return None
+      exit('ImageRequest ERROR',ImageRequest.status_code )
   except Exception as e:
-    print(str(e))
-    return None
-  img = Image.open(tmp_path)
-  return ensure_square_image(img, length)
+    tmp.close()
+    exit(e)
+  image = Image.open(tmp.name)
+  tmp.close()
+  return ensure_square_image(image, length)
 
 def colormap(img, colors, tol=1e-3):
   pixels = img.reshape(img.shape[0] * img.shape[1], 3)
