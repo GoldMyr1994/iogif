@@ -35,10 +35,11 @@ def get_images_filenames_from_folder(folder):
       filenames.append(f"{folder}/{filename}")
   return filenames
 
-def make_gif(images, out, duration=0.04):
-  imageio.mimsave(os.path.join(out), images)
+def make_gif(images, out, duration=4):
+  kargs = { 'duration': duration }
+  imageio.mimsave(os.path.join(out), images, 'GIF', **kargs)
 
-def make_gif_from_folder(folder, out):
+def make_gif_from_folder(folder, out, duration=4):
   filenames = get_images_filenames_from_folder(folder)
   images = list(map(lambda filename: imageio.imread(filename), filenames))
   make_gif(images, out)
