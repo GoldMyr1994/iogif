@@ -3,6 +3,7 @@
         "astype",
         "dtype",
         "exif",
+        "fromarray",
         "imageio",
         "imread",
         "imwrite",

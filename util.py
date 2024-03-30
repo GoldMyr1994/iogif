@@ -1,18 +1,14 @@
 import sys
-sys.path.append('/Users/mauroconte/Desktop/iogif/')
-
 import requests
-from PIL import Image, ImageFile, ImageOps
 import os
 import shutil
 import uuid
-import imageio
 import numpy as np
 import time
-from urllib.parse import urlparse
-import cv2
-
 import tempfile
+
+from PIL import Image, ImageFile, ImageOps
+from urllib.parse import urlparse
 
 ImageFile.LOAD_TRUNCATED_IMAGES = True
 
@@ -34,38 +30,20 @@ def get_images_filenames_from_folder(folder):
       filenames.append(f"{folder}/{filename}")
   return filenames
 
-def make_gif(images, out, duration=4):
-  kargs = { 'duration': duration }
-  imageio.mimsave(os.path.join(out), images, 'GIF', **kargs)
-
-def make_gif_from_folder(folder, out, duration=4):
-  filenames = get_images_filenames_from_folder(folder)
-  images = list(map(lambda filename: imageio.imread(filename), filenames))
-  make_gif(images, out)
-
-def clean_temp():
-  for root, dirs, files in os.walk("out/temp/"):
-    for f in files:
-      if f == '.gitkeep':
-        continue
-      os.unlink(os.path.join(root, f))
-    for d in dirs:
-      shutil.rmtree(os.path.join(root, d))
-
-def read_image(source_string, length=800):
+def read_image(source_string):
   if urlparse(source_string).scheme != "":
-    return read_image_from_url(source_string, length)
-  return read_image_from_disk(source_string, length)
+    return read_image_from_url(source_string)
+  return read_image_from_disk(source_string)
 
-def read_image_from_disk(image_path, length=800):
+def read_image_from_disk(image_path):
   try:
     original_image = Image.open(image_path)
     image = ImageOps.exif_transpose(original_image)
-    return ensure_square_image(image, length)
+    return image
   except Exception as e:
     exit(e)
 
-def read_image_from_url(image_url, length=800):
+def read_image_from_url(image_url):
   tmp = tempfile.NamedTemporaryFile()
   try:
     ImageRequest = requests.get(image_url)
@@ -78,35 +56,24 @@ def read_image_from_url(image_url, length=800):
     exit(e)
   image = Image.open(tmp.name)
   tmp.close()
-  return ensure_square_image(image, length)
+  return image
 
-def colormap(img, colors, tol=1e-3):
+COLORS = [ np.random.randint(0,256,size=3) for i in range(1000000) ]
+
+def random_colormap(image, tol=1e-3):
+  global COLORS
+  img = np.asarray(image)
   pixels = img.reshape(img.shape[0] * img.shape[1], 3)
   unique_pixels = np.unique(pixels, axis=0)
-  colors.extend([ np.random.randint(0,256,size=3) for i in range(len(unique_pixels)-len(colors))])
-  colors = colors[:len(unique_pixels)]
+
+  colors = []
+  for i in range(len(unique_pixels)):
+    colors.append(COLORS[0])
+    del COLORS[0]
+
   out = img.copy().astype(np.uint8)
   for index, el in enumerate(unique_pixels):
     out[np.where(np.linalg.norm(img - el,axis=-1)<1e-3)] = colors[index]
-  return out
+  return Image.fromarray(out)
 
-def make_andy_warhol(folder, module=64, n=9):
-  filenames = get_images_filenames_from_folder(folder)
-  images = list(map(lambda filename: imageio.imread(filename), filenames))
 
-  randoms = []
-  if n**2-len(images)>0:
-    randoms = np.random.randint(0, len(images), n**2-len(images))
-
-  for index in randoms:
-    images.append(images[index])
-
-  for i in range(len(images)):
-    images[i] = cv2.resize(images[i], (module, module), interpolation = cv2.INTER_AREA)
-
-  base = np.zeros((module*n,module*n, 3),np.uint8)
-  for i in range(n**2):
-    r,c = i//n, i%n
-    base[r*module:(r+1)*module, c*module:(c+1)*module] = images[i]
-
-  return base
